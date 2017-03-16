@@ -43,14 +43,28 @@
 </template>
 
 <script>
+
+// import jwt from 'jsonwebtoken';
+
   export default {
+    created() {
+      const userInfo = this.getUserInfo();
+      if (userInfo != null) {
+        this.id = userInfo.id;
+        this.name = userInfo.name
+      } else {
+        this.id = '';
+        this.name = '';
+      }
+    },
     data () {
       return {
-        name: 'Neo Chang',
+        name: '',
         todos: '',
         activeName: 'first',
         list: [],
-        count: 0
+        count: 0,
+        id: ''
       };
     },
     computed: {
@@ -95,6 +109,15 @@
           type: 'info',
           message: '任务还原'
         })
+      },
+      getUserInfo() {
+        const token = sessionStorage.getItem('demo-token');
+        if (token != null && token != 'null') {
+          let decode = jwt.verify(token, 'neo-chang-48956');
+          return decode;
+        } else {
+          return null;
+        }
       }
     }
   };

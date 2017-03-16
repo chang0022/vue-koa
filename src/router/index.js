@@ -5,7 +5,7 @@ import TodoList from '@/components/TodoList'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
@@ -22,3 +22,21 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  const token = sessionStorage.getItem('demo-token');
+  if (to.path == '/') {
+    if (token != 'null' && token != null) {
+      next('/todolist');
+    }
+    next();
+  } else {
+    if (token != 'null' && token != null) {
+      next();
+    } else {
+      next('/');
+    }
+  }
+})
+
+export default router

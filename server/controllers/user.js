@@ -36,6 +36,7 @@ const postUserAuth = async ctx => {
     };
   }
 };
+
 module.exports = {
   auth: (router) => {
     router.get('/user/:id', getUserInfo);
