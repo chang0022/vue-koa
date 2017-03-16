@@ -5,15 +5,13 @@ const TodolistDB = db.Todolist;
 const User = TodolistDB.import(userModel);
 
 const getUserById = async (id) => {
-  const userInfo = await User.findOne({
+  return await User.findOne({
     where: {
       id: id
     }
   });
-
-  return userInfo;
-}
+};
 
 module.exports = {
   getUserById
-}
+};
