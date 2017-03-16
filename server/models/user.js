@@ -4,7 +4,7 @@ const TodolistDB = db.Todolist;
 
 const User = TodolistDB.import(userModel);
 
-const getUserById = async (id) => {
+const getUserById = async id => {
   return await User.findOne({
     where: {
       id: id
@@ -12,7 +12,7 @@ const getUserById = async (id) => {
   });
 };
 
-const getUserByName = async (name) => {
+const getUserByName = async name => {
   return await User.findOne({
     where: {
       user_name: name

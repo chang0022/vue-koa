@@ -1,12 +1,12 @@
 const user = require('../models/user');
-const jwt = require('koa-jwt');
+const jwt = require('jsonwebtoken');
 
-const getUserInfo = async (ctx) => {
+const getUserInfo = async ctx => {
   const id = ctx.params.id;
   ctx.body = await user.getUserById(id);
 };
 
-const postUserAuth = async (ctx) => {
+const postUserAuth = async ctx => {
   const data = ctx.request.body;
   const userInfo = await user.getUserByName(data.name);
 
@@ -22,7 +22,8 @@ const postUserAuth = async (ctx) => {
         id: userInfo.id
       };
       const secret = 'neo-chang-48956';
-      const token = jwt.sign(userToken, secret);
+      const token = jwt.sign(userToken,secret);
+      console.log(token)
       ctx.body = {
         success: true,
         token: token

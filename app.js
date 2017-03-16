@@ -16,7 +16,7 @@ app.use(async (ctx, next) => {
     console.log(`${ctx.method} ${ctx.url} - ${ms}`);
 });
 
-app.on('error', (err) =>
+app.on('error', err =>
   console.log('server error', err)
 );
 
