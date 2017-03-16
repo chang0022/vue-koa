@@ -12,7 +12,10 @@
 
 </template>
 
-<script>
+<script type="text/ecmascript-6">
+
+  import md5 from 'md5';
+
   export default {
     data () {
       return {
@@ -22,7 +25,27 @@
     },
     methods: {
       loginTodo() {
-        this.$router.push('/todolist');
+        let obj = {
+          name: this.account,
+          password: md5(this.password)
+        };
+        this.$http.post('/auth/user', obj)
+          .then((res) => {
+            if(res.data.success) {
+            sessionStorage.setItem('demo-token', res.data.token);
+            this.$message({
+               type: 'success',
+              message: '登录成功！'
+            });
+            this.$router.push('/todolist');
+          } else {
+            this.$message.error(res.data.info);
+            sessionStorage.setItem('demo-token', null);
+          }
+        }, (err) => {
+          this.$message.error('请求错误！')
+          sessionStorage.setItem('demo-token',null);
+        })
       }
     }
   }
