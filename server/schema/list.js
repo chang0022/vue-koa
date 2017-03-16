@@ -10,18 +10,15 @@ module.exports = function(sequelize, DataTypes) {
     },
     user_id: {
       type: DataTypes.INTEGER(11),
-      allowNull: true,
-      defaultValue: "0"
+      allowNull: true
     },
     content: {
       type: DataTypes.CHAR(255),
-      allowNull: true,
-      defaultValue: "0"
+      allowNull: true
     },
     status: {
       type: DataTypes.INTEGER(1),
-      allowNull: true,
-      defaultValue: "0"
+      allowNull: true
     }
   }, {
     tableName: 'list'
