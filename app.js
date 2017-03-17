@@ -3,7 +3,9 @@ const Koa = require('koa')
     , router = require('koa-router')()
     , json = require('koa-json')
     , logger = require('koa-logger')
-    , auth = require('./server/routes/auth');
+    , auth = require('./server/routes/auth')
+    , api = require('./server/routes/api')
+    , jwt = require('koa-jwt');
 
 app.use(require('koa-bodyparser')());
 app.use(json());
@@ -16,13 +18,28 @@ app.use(async (ctx, next) => {
     console.log(`${ctx.method} ${ctx.url} - ${ms}`);
 });
 
+app.use(async (ctx, next) => {
+  return next().catch((err) => {
+    if (401 == err.status) {
+      ctx.status = 401;
+      ctx.body = {
+        success: false,
+        token: null,
+        info: 'Protected resource, use Authorization header to get access'
+      }
+    } else {
+      throw err;
+    }
+  });
+});
+
 app.on('error', err =>
   console.log('server error', err)
 );
 
 
 router.use('/auth', auth.routes());
-
+router.use('/api', jwt({secret: 'neo-chang-48956'}), api.routes());
 app.use(router.routes());
 
 app.listen(8889, () => {

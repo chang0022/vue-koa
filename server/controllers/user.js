@@ -22,8 +22,7 @@ const postUserAuth = async ctx => {
         id: userInfo.id
       };
       const secret = 'neo-chang-48956';
-      const token = jwt.sign(userToken,secret);
-      console.log(token)
+      const token = jwt.sign(userToken, secret);
       ctx.body = {
         success: true,
         token: token
@@ -38,7 +37,7 @@ const postUserAuth = async ctx => {
 };
 
 module.exports = {
-  auth: (router) => {
+  auth: router => {
     router.get('/user/:id', getUserInfo);
     router.post('/user', postUserAuth);
   }

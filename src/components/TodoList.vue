@@ -1,7 +1,7 @@
 <template>
   <el-row class="content">
     <el-col :xs="{span:20, offset:2}" :sm="{span:8, offset:8}">
-      <span>欢迎：{{name}} ! 你的待办事项是：</span>
+      <span>欢迎：{{name}}，你的待办事项是：</span>
       <el-input placeholder="请输入待办事项" v-model="todos" @keyup.enter.native="addTodos"></el-input>
       <el-tabs v-model="activeName">
         <el-tab-pane label="待办事项" name="first">
@@ -13,7 +13,7 @@
                   {{ index + 1 }}. {{ item.content }}
                 </span>
                   <span class="pull-right">
-                  <el-button size="small" type="primary" @click="finished(index)">完成</el-button>
+                  <el-button size="small" type="primary" @click="update(index)">完成</el-button>
                   <el-button size="small" :plain="true" type="danger" @click="remove(index)">删除</el-button>
                 </span>
                 </div>
@@ -30,7 +30,7 @@
                   {{ index + 1 }}. {{ item.content }}
                 </span>
                 <span class="pull-right">
-                  <el-button size="small" type="primary" @click="restore(index)">还原</el-button>
+                  <el-button size="small" type="primary" @click="update(index)">还原</el-button>
                 </span>
               </div>
             </template>
@@ -43,8 +43,6 @@
 </template>
 
 <script>
-
-// import jwt from 'jsonwebtoken';
 
   export default {
     created() {
@@ -84,40 +82,103 @@
           return false;
         let obj = {
           status: false,
-          content: this.todos
+          content: this.todos,
+          id: this.id
         };
-        this.list.push(obj);
+        this.$http.post('/api/todolist', obj)
+          .then(res => {
+            if (res.status == 200) {
+              this.$message({
+                type: 'success',
+                message: '创建成功'
+              });
+              this.getTodolist();
+            } else {
+              this.$message.error('创建失败');
+            }
+          }, err => {
+            this.$message.error('创建失败');
+            console.log(err)
+          });
         this.todos = '';
       },
-      finished(index) {
-        this.$set(this.list[index], 'status', true);
-        this.$message({
-          type: 'success',
-          message: '任务完成'
-        })
+//      finished(index) {
+//        this.$set(this.list[index], 'status', true);
+//        this.$message({
+//          type: 'success',
+//          message: '任务完成'
+//        })
+//      },
+//      remove(index) {
+//        this.list.splice(index, 1);
+//        this.$message({
+//          type: 'info',
+//          message: '任务删除'
+//        })
+//      },
+//      restore(index) {
+//        this.$set(this.list[index], 'status', false);
+//        this.$message({
+//          type: 'info',
+//          message: '任务还原'
+//        })
+//      },
+      update(index) {
+        this.$http.put('/api/todolist/' + this.id + '/' + this.list[index].id + '/' + this.list[index].status)
+          .then(res => {
+            if (res.status == 200) {
+              this.$message({
+                type: 'success',
+                message: '任务状态更新成功'
+              });
+              this.getTodolist();
+            } else {
+              this.$message.error('任务状态更新失败');
+            }
+          }, err => {
+            this.$message.error('任务状态更新失败');
+            console.log(err)
+          })
       },
       remove(index) {
-        this.list.splice(index, 1);
-        this.$message({
-          type: 'info',
-          message: '任务删除'
-        })
-      },
-      restore(index) {
-        this.$set(this.list[index], 'status', false);
-        this.$message({
-          type: 'info',
-          message: '任务还原'
-        })
+        this.$http.delete('/api/todolist/' + this.id + '/' + this.list[index].id)
+          .then(res => {
+            if (res.status == 200) {
+              this.$message({
+                type: 'success',
+                message: '任务删除成功'
+              });
+              this.getTodolist();
+            } else {
+              this.$message.error('任务删除失败');
+            }
+          }, err => {
+            this.$message.error('任务删除失败');
+            console.log(err)
+          })
       },
       getUserInfo() {
         const token = sessionStorage.getItem('demo-token');
         if (token != null && token != 'null') {
-          let decode = jwt.verify(token, 'neo-chang-48956');
-          return decode;
+//          Bug: import jwt 会报错
+//          let decode = jwt.verify(token, 'neo-chang-48956');
+          return JSON.parse(window.atob(token.split('.')[1]));
         } else {
           return null;
         }
+      },
+      getTodolist() {
+        this.$http.get('/api/todolist/' + this.id)
+          .then(res => {
+            if (res.status == 200) {
+              this.list = res.data;
+            } else {
+              this.$message.error('获取列表失败');
+            }
+          }, err => {
+            this.$message.error('获取列表失败');
+            console.log(err);
+          });
       }
     }
   };
@@ -126,11 +187,12 @@
 <style lang="stylus" rel="stylesheet/stylus" scoped>
   .el-input
     margin 20px auto
+
   .todo-list
     width 100%
     margin-top 8px
     padding-botton 8px
-    border-bottom 1ox solid #eee
+    border-bottom 1 ox solid #eee
     overflow hidden
     text-align left
     .item
@@ -138,6 +200,7 @@
       &.finished
         text-decoration line-through
         color #ddd
+
   .pull-right
     float right
 </style>
