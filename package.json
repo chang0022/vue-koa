@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "axios": "^0.15.3",
+    "bcryptjs": "^2.4.3",
     "element-ui": "^1.2.4",
     "jsonwebtoken": "^7.3.0",
     "koa": "^2.2.0",
@@ -18,7 +19,6 @@
     "koa-jwt": "^3.0.0",
     "koa-logger": "^2.0.1",
     "koa-router": "^7.0.1",
-    "md5": "^2.2.1",
     "mysql": "^2.13.0",
     "sequelize": "^3.30.2",
     "stylus": "^0.54.5",

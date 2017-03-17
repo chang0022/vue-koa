@@ -1,5 +1,6 @@
 const user = require('../models/user');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 const getUserInfo = async ctx => {
   const id = ctx.params.id;
@@ -11,7 +12,7 @@ const postUserAuth = async ctx => {
   const userInfo = await user.getUserByName(data.name);
 
   if(userInfo != null) {
-    if(userInfo.password != data.password) {
+    if(!bcrypt.compareSync(data.password, userInfo.password)) {
       ctx.body = {
         success: false,
         info: '密码错误'

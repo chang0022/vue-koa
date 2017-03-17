@@ -14,8 +14,6 @@
 
 <script type="text/ecmascript-6">
 
-  import md5 from 'md5';
-
   export default {
     data () {
       return {
@@ -27,7 +25,7 @@
       loginTodo() {
         let obj = {
           name: this.account,
-          password: md5(this.password)
+          password: this.password
         };
         this.$http.post('/auth/user', obj)
           .then((res) => {
