@@ -43,7 +43,6 @@
 </template>
 
 <script>
-
   export default {
     created() {
       const userInfo = this.getUserInfo();
@@ -102,27 +101,6 @@
           });
         this.todos = '';
       },
-//      finished(index) {
-//        this.$set(this.list[index], 'status', true);
-//        this.$message({
-//          type: 'success',
-//          message: '任务完成'
-//        })
-//      },
-//      remove(index) {
-//        this.list.splice(index, 1);
-//        this.$message({
-//          type: 'info',
-//          message: '任务删除'
-//        })
-//      },
-//      restore(index) {
-//        this.$set(this.list[index], 'status', false);
-//        this.$message({
-//          type: 'info',
-//          message: '任务还原'
-//        })
-//      },
       update(index) {
         this.$http.put('/api/todolist/' + this.id + '/' + this.list[index].id + '/' + this.list[index].status)
           .then(res => {
@@ -160,8 +138,6 @@
       getUserInfo() {
         const token = sessionStorage.getItem('demo-token');
         if (token != null && token != 'null') {
-//          Bug: import jwt 会报错
-//          let decode = jwt.verify(token, 'neo-chang-48956');
           return JSON.parse(window.atob(token.split('.')[1]));
         } else {
           return null;

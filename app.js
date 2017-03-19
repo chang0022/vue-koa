@@ -5,7 +5,10 @@ const Koa = require('koa')
     , logger = require('koa-logger')
     , auth = require('./server/routes/auth')
     , api = require('./server/routes/api')
-    , jwt = require('koa-jwt');
+    , jwt = require('koa-jwt')
+    , path = require('path')
+    , serve = require('koa-static')
+    , historyApiFallback = require('koa-history-api-fallback');
 
 app.use(require('koa-bodyparser')());
 app.use(json());
@@ -37,10 +40,13 @@ app.on('error', err =>
   console.log('server error', err)
 );
 
-
 router.use('/auth', auth.routes());
 router.use('/api', jwt({secret: 'neo-chang-48956'}), api.routes());
+
 app.use(router.routes());
+
+app.use(historyApiFallback());
+app.use(serve(path.resolve('dist')));
 
 app.listen(8889, () => {
   console.log('Koa is listening in 8889');
